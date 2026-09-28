@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="rootPane" prefHeight="680.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dogtrainingapp.dog_training_app.controller.HomeController">
+    <top>
+        <HBox spacing="10" style="-fx-background-color: #29465b; -fx-padding: 14;">
+            <children>
+                <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="Dog Training App" />
+            </children>
+        </HBox>
+    </top>
+    <left>
+        <VBox prefWidth="220.0" spacing="10" style="-fx-background-color: #eef3f7; -fx-padding: 15;">
+            <children>
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Functions" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#showRegisterDog" prefHeight="25.0" prefWidth="160.0" text="Register Dog" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#showAddTraining" prefHeight="25.0" prefWidth="160.0" text="Add Training Record" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#showSearchDogs" prefHeight="25.0" prefWidth="160.0" text="Search Dogs" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#showBehavior" prefHeight="25.0" prefWidth="160.0" text="Trigger Behaviors" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#showHistory" prefHeight="25.0" prefWidth="160.0" text="Review History" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#showPersistence" prefHeight="25.0" prefWidth="160.0" text="Save / Load" />
+            </children>
+            <padding>
+                <Insets bottom="15" left="15" right="15" top="15" />
+            </padding>
+        </VBox>
+    </left>
+    <bottom>
+        <HBox style="-fx-background-color: #f4f4f4; -fx-padding: 10;">
+            <children>
+                <Label fx:id="statusLabel" text="Ready." />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

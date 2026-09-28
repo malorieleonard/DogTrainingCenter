@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="14" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.dogtrainingapp.dog_training_app.controller.SearchDogController"
+      style="-fx-padding: 20;">
+    <children>
+        <Label text="Search Dogs" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        <GridPane hgap="10" vgap="10">
+            <children>
+                <Label text="Search by ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <TextField fx:id="idSearchField" promptText="Dog ID" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                <Button text="Find by ID" onAction="#searchById" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+
+                <Label text="Search by Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <TextField fx:id="nameSearchField" promptText="Dog name" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                <Button text="Find by Name" onAction="#searchByName" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+
+                <Label text="Search by Type:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <ComboBox fx:id="typeComboBox" prefWidth="220" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                <Button text="Find by Type" onAction="#searchByType" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+            </children>
+        </GridPane>
+        <Button text="Show All Dogs" onAction="#showAllDogs" maxWidth="150" />
+        <ListView fx:id="resultListView" prefHeight="360" />
+    </children>
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+</VBox>

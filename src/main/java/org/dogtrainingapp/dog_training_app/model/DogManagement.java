@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
  *
  * <p>File formats:</p>
  * <pre>
- *   dogs.txt:    dogID,TYPE,name,age,breed        (e.g., 1,THERAPY,Izzy,3,Golden Retriever)
- *   records.txt: dogID,skill,date,PERFORMANCE     (e.g., 1,Sit,2026-03-01,EXCELLENT)
+ *   dogs.txt:    dogID,TYPE,name,age,breed
+ *   records.txt: dogID,skill,date,PERFORMANCE
  * </pre>
  */
 public class DogManagement {
 
     private List<Dog> dogs;
-    //Declare three static final Path constants using Paths.get().
-    private static final Path DATA_DIR    = Paths.get("data");
-    private static final Path DOG_FILE    = Paths.get("data", "dogs.txt");
+
+    private static final Path DATA_DIR = Paths.get("data");
+    private static final Path DOG_FILE = Paths.get("data", "dogs.txt");
     private static final Path RECORD_FILE = Paths.get("data", "records.txt");
 
     /**
@@ -41,11 +41,13 @@ public class DogManagement {
     public DogManagement() {
         dogs = new ArrayList<>();
 
-        // TODO: Use Files.exists() to check if DATA_DIR exists.
-        //       If it does NOT exist, create it using Files.createDirectories().
-        //       Wrap in try-catch for IOException.
-
-
+        try {
+            if (!Files.exists(DATA_DIR)) {
+                Files.createDirectories(DATA_DIR);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -74,7 +76,9 @@ public class DogManagement {
      */
     public Dog searchByID(int id) {
         for (Dog d : dogs) {
-            if (d.getDogID() == id) return d;
+            if (d.getDogID() == id) {
+                return d;
+            }
         }
         return null;
     }
@@ -104,109 +108,129 @@ public class DogManagement {
     }
 
     /**
-     * Saves all dogs to data/dogs.txt
-     * Format per line:  dogID,TYPE,name,age,breed
-     * Example:  1,THERAPY,Izzy,3,Golden Retriever
+     * Saves all dogs to data/dogs.txt.
+     * Format per line: dogID,TYPE,name,age,breed
      */
     public void saveDogs() {
-        //TODO: Implement using Formatter to save all dogs to data/dogs.txt
-        //      use try-with-resources: Formatter fmt = new Formatter(DOG_FILE.toFile())
-        //      Loop through all dogs
-        //          use fmt.format() with specifiers: %d,%s,%s,%d,%s%n
-        //          use d.getType().name() to get the enum constant name (e.g., "THERAPY" not "Therapy dog")
-        //      Wrap in try-catch for IOException.
-
-
+        try (Formatter fmt = new Formatter(DOG_FILE.toFile())) {
+            for (Dog d : dogs) {
+                fmt.format("%d,%s,%s,%d,%s%n",
+                        d.getDogID(),
+                        d.getType().name(),
+                        d.getName(),
+                        d.getAge(),
+                        d.getBreed());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Loads dogs from data/dogs.txt
+     * Loads dogs from data/dogs.txt.
      */
     public void loadDogs() {
         dogs.clear();
 
-        //TODO: load dogs from data/dogs.txt using Scanner
-        //   First check if DOG_FILE exists using Files.exists()
-        //           if it does not exist, return;
-        //   Use try-with-resources: new Scanner(DOG_FILE.toFile())
-        //   Use scanner.hasNextLine() and scanner.nextLine()
-        //      Split each line by "," and parse each part:
-        //              parts[0] → dogID   (Integer.parseInt())
-        //              parts[1] → type    (DogType.valueOf())
-        //              parts[2] → name
-        //              parts[3] → age     (Integer.parseInt())
-        //              parts[4] → breed
-        //      Call createDog(type, id, name, age, breed)
-        //      Add the dog to the list dogs if not null
-        // Wrap in try-catch for IOException.
+        if (!Files.exists(DOG_FILE)) {
+            return;
+        }
 
+        try (Scanner scanner = new Scanner(DOG_FILE.toFile())) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
 
+                if (parts.length == 5) {
+                    int id = Integer.parseInt(parts[0]);
+                    DogType type = DogType.valueOf(parts[1]);
+                    String name = parts[2];
+                    int age = Integer.parseInt(parts[3]);
+                    String breed = parts[4];
 
+                    Dog dog = createDog(type, id, name, age, breed);
+                    if (dog != null) {
+                        dogs.add(dog);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Saves all training records to data/records.txt
-     * Format per line:  dogID,skill,date,PERFORMANCE
-     * Example:          1,Sit,2026-03-01,EXCELLENT
+     * Saves all training records to data/records.txt.
+     * Format per line: dogID,skill,date,PERFORMANCE
      */
     public void saveRecords() {
-
-        //TODO: Implement using BufferedWriter to save all training records to data/records.txt
-        //   Use try-with-resources: new BufferedWriter(new FileWriter(RECORD_FILE.toFile()))
-        //   Loop through all dogs, then loop through each dog's records
-        //        - Use bw.write() to write: dogID + "," + skill + "," + date + "," + performance
-        //        - Use bw.newLine() after each record
-        //   Wrap in try-catch for IOException.
-        //   NOTE:
-        //        get dogID from the Dog (d.getDogID()) since TrainingRecord doesn't have dogID
-        //        use r.getPerformance().name() to get the enum constant name
-        //                (e.g., "EXCELLENT" not "Excellent")
-
-
-
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(RECORD_FILE.toFile()))) {
+            for (Dog d : dogs) {
+                for (TrainingRecord r : d.getRecords()) {
+                    bw.write(d.getDogID() + "," + r.getSkill() + "," + r.getDate() + "," + r.getPerformance().name());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Loads training records from data/records.txt and attaches each record to its corresponding Dog.
      */
     public void loadRecords() {
+        if (!Files.exists(RECORD_FILE)) {
+            return;
+        }
 
-        //TODO: Implement using BufferedReader to load training records
-        //   Check if RECORD_FILE exists using Files.exists()
-        //                if it does not exist, return.
-        //   Use try-with-resources: new BufferedReader(new FileReader(RECORD_FILE.toFile()))
-        //       Read lines in a while loop: while ((line = br.readLine()) != null)
-        //          Split each line by "," and parse each part:
-        //              parts[0] → dogID
-        //              parts[1] → skill
-        //              parts[2] → date
-        //              parts[3] → performance (Performance.valueOf())
-        //          Create: new TrainingRecord(skill, date, performance)
-        //          Use searchByID(dogID) to find the owning Dog
-        //          If dog is not null, call dog.addRecord(record)
-        //   Wrap in try-catch for IOException.
+        try (BufferedReader br = new BufferedReader(new FileReader(RECORD_FILE.toFile()))) {
+            String line;
 
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
 
+                if (parts.length == 4) {
+                    int dogID = Integer.parseInt(parts[0]);
+                    String skill = parts[1];
+                    String date = parts[2];
+                    Performance performance = Performance.valueOf(parts[3]);
+
+                    TrainingRecord record = new TrainingRecord(skill, date, performance);
+                    Dog dog = searchByID(dogID);
+
+                    if (dog != null) {
+                        dog.addRecord(record);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Factory method that creates the appropriate Dog subclass
      * based on the given {@link DogType}.
      *
-     * @param type  the type of dog to create
-     * @param id    the unique identifier for the dog
-     * @param name  the name of the dog
-     * @param age   the age of the dog
+     * @param type the type of dog to create
+     * @param id the unique identifier for the dog
+     * @param name the name of the dog
+     * @param age the age of the dog
      * @param breed the breed of the dog
      * @return a new {@link TherapyDog}, {@link PoliceDog}, or {@link RescueDog},
      *         or {@code null} if the type is unrecognized
      */
     private Dog createDog(DogType type, int id, String name, int age, String breed) {
         switch (type) {
-            case THERAPY: return new TherapyDog(id, name, age, breed);
-            case POLICE:  return new PoliceDog(id, name, age, breed);
-            case RESCUE:  return new RescueDog(id, name, age, breed);
-            default:      return null;
+            case THERAPY:
+                return new TherapyDog(id, name, age, breed);
+            case POLICE:
+                return new PoliceDog(id, name, age, breed);
+            case RESCUE:
+                return new RescueDog(id, name, age, breed);
+            default:
+                return null;
         }
     }
 }

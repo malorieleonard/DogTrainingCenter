@@ -23,18 +23,37 @@ public abstract class Dog {
     /**
      * Constructs a new Dog with the specified attributes.
      * Initializes the training records list as an empty ArrayList.
+     * If an invalid age is provided, the age is set to 0.
      *
-     * @param dogID the unique identifier for this dog
-     * @param name  the name of the dog
-     * @param age   the age of the dog in years
+     * @param id the unique identifier for this dog
+     * @param name the name of the dog
+     * @param age the age of the dog in years
      * @param breed the breed of the dog
      */
     public Dog(int id, String name, int age, String breed) {
         this.dogID = id;
         this.name = name;
-        this.age = age;
         this.breed = breed;
         this.records = new ArrayList<>();
+
+        try {
+            validateAge(age);
+            this.age = age;
+        } catch (InvalidAgeException e) {
+            this.age = 0;
+        }
+    }
+
+    /**
+     * Validates the dog's age.
+     *
+     * @param age the age to validate
+     * @throws InvalidAgeException if age is negative
+     */
+    private void validateAge(int age) throws InvalidAgeException {
+        if (age < 0) {
+            throw new InvalidAgeException("Age cannot be negative.");
+        }
     }
 
     /**
@@ -42,42 +61,60 @@ public abstract class Dog {
      *
      * @return the dog ID
      */
-    public int getDogID() { return dogID; }
+    public int getDogID() {
+        return dogID;
+    }
 
     /**
      * Returns the name of this dog.
      *
      * @return the dog's name
      */
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     /**
      * Returns the age of this dog.
      *
      * @return the dog's age in years
      */
-    public int getAge() {return age; }
+    public int getAge() {
+        return age;
+    }
 
     /**
      * Returns the breed of this dog.
      *
      * @return the dog's breed
      */
-    public String getBreed() { return breed; }
+    public String getBreed() {
+        return breed;
+    }
 
     /**
      * Returns the list of training records for this dog.
      *
      * @return the list of {@link TrainingRecord} objects
      */
-    public List<TrainingRecord> getRecords(){ return records; }
+    public List<TrainingRecord> getRecords() {
+        return records;
+    }
 
     /**
      * Sets the age of this dog.
+     * If an invalid age is provided, the age is set to 0.
      *
      * @param age the new age in years
      */
-    public void setAge(int age) { this.age = age; }
+    public void setAge(int age) {
+        try {
+            validateAge(age);
+            this.age = age;
+        } catch (InvalidAgeException e) {
+            this.age = 0;
+        }
+    }
 
     /**
      * Adds a training record to this dog's training history.

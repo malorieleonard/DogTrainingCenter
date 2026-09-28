@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="14" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.dogtrainingapp.dog_training_app.controller.HistoryController"
+      style="-fx-padding: 20;">
+    <children>
+        <Label text="Review Training History" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        <GridPane hgap="10" vgap="10">
+            <children>
+                <Label text="Dog ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <TextField fx:id="dogIdField" promptText="Enter dog ID" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                <Button text="Load History" onAction="#loadHistory" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+            </children>
+        </GridPane>
+        <ListView fx:id="historyListView" prefHeight="380" />
+    </children>
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+</VBox>
